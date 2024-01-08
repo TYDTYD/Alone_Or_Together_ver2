@@ -1,3 +1,5 @@
-# Alone_Or_Together_Version2
+# Alone_Or_Together_Ver3
 
-기존에 사용하던 Unity의 Base Template을 제거한 새로운 repo입니다.
+캡스톤 디자인에서 제작한 게임(2022.9~2023.05)을 혼자서 새롭게 재정의하여 제작 중인 게임입니다.
+
+스팀 출시 및 공모전 출시 예정입니다.
