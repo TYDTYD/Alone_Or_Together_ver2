@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Moving
+  - Health
+  - Itembox
+  - Key
+  - PlayerHand
+  - Destination
+  - Car
+  - StartPoint
+  - ShaderBox
+  - CheckPoint
+  - Obstacle
+  - ChatInput
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Ground
+  - Water
+  - UI
+  - Image
+  - Door
+  - Disable
+  - AimPoint
+  - Road
+  - Projectile
+  - IgnoreProjectile
+  - Postprocessing
+  - HandMission
+  - IgnoreCam
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
