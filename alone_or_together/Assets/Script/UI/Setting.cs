@@ -30,4 +30,9 @@ public class Setting : MonoBehaviour
     {
         setting.SetActive(false);
     }
+
+    public void Exit()
+    {
+        Application.Quit();
+    }
 }
