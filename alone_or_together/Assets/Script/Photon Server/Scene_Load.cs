@@ -75,6 +75,7 @@ public class Scene_Load : MonoBehaviourPunCallbacks
     /// </summary>
     public void Load()
     {
+        /*
         bool pass = true;
 
         foreach(char c in Nickname.text)
@@ -96,6 +97,7 @@ public class Scene_Load : MonoBehaviourPunCallbacks
         }
         else if (pass)
             warning.text = "Nickname must be at least one characters";
+        */
     }
 
 
