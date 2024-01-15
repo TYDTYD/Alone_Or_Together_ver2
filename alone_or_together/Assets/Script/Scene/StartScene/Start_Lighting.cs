@@ -35,8 +35,10 @@ public class Start_Lighting : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CubePosition =Connected.GetComponent<Transform>().position;
+        CubePosition = Connected.GetComponent<Transform>().position;
         gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-10,10), 0, Random.Range(-10, 10)),ForceMode.Impulse);
+        Scene_Load scene_Load = FindObjectOfType<Scene_Load>();
+        scene_Load.tutorial += Toward_Door;
     }
 
     // Update is called once per frame
@@ -71,5 +73,10 @@ public class Start_Lighting : MonoBehaviour
             LookAtPosition.z = transform.position.z + zdiff;
         }
         transform.LookAt(LookAtPosition);
+    }
+
+    void Toward_Door()
+    {
+
     }
 }

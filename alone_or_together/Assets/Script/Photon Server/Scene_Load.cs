@@ -15,6 +15,7 @@ using VivoxUnity;
 /// </remarks>
 public class Scene_Load : MonoBehaviourPunCallbacks
 {
+    public event Action tutorial;
     public InputField Nickname;
     public GameObject player;
     public GameObject start;
@@ -75,6 +76,7 @@ public class Scene_Load : MonoBehaviourPunCallbacks
     /// </summary>
     public void Load()
     {
+        tutorial();
         /*
         bool pass = true;
 
