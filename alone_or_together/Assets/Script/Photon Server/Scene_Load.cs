@@ -15,7 +15,7 @@ using VivoxUnity;
 /// </remarks>
 public class Scene_Load : MonoBehaviourPunCallbacks
 {
-    public event Action tutorial;
+    public event Action Tutorial;
     public InputField Nickname;
     public GameObject player;
     public GameObject start;
@@ -76,18 +76,16 @@ public class Scene_Load : MonoBehaviourPunCallbacks
     /// </summary>
     public void Load()
     {
-        tutorial();
-        /*
         bool pass = true;
 
-        foreach(char c in Nickname.text)
+        foreach (char c in Nickname.text)
         {
             if (c == ' ')
             {
                 warning.text = "Nickname must not contain spaces";
                 pass = false;
                 // 한글 검사 only english
-            }   
+            }
         }
 
         if (pass && Nickname.text != "")
@@ -95,11 +93,11 @@ public class Scene_Load : MonoBehaviourPunCallbacks
             VivoxManager.Instance.Login(VivoxManager.Instance.GetInstanceID().ToString());
             Debug.Log(VivoxManager.Instance.GetInstanceID().ToString());
             PhotonNetwork.LocalPlayer.NickName = Nickname.text;
-            SceneManager.LoadScene("Game_Lobby");
+            //SceneManager.LoadScene("Game_Lobby");
         }
         else if (pass)
             warning.text = "Nickname must be at least one characters";
-        */
+        Tutorial();
     }
 
 

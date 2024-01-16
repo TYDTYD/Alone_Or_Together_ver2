@@ -9,9 +9,8 @@ using UnityEngine;
 /// @class Start_Lighting
 public class Start_Lighting : MonoBehaviour
 {
-    [SerializeField]
-    GameObject Connected;
-
+    [SerializeField] private GameObject Connected;
+    [SerializeField] private Scene_Load scene_Load;
     Vector3 CubePosition;
     Vector3 LookAtPosition;
 
@@ -37,8 +36,7 @@ public class Start_Lighting : MonoBehaviour
     {
         CubePosition = Connected.GetComponent<Transform>().position;
         gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-10,10), 0, Random.Range(-10, 10)),ForceMode.Impulse);
-        Scene_Load scene_Load = FindObjectOfType<Scene_Load>();
-        scene_Load.tutorial += Toward_Door;
+        scene_Load.Tutorial += Toward_Door;
     }
 
     // Update is called once per frame
