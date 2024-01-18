@@ -110,7 +110,7 @@ public class Player : MonoBehaviourPunCallbacks, IDamageAble, IPunObservable
 
             stream.SendNext(transform.rotation);
         }
-        else
+        else if(stream.IsReading)
         {
             networkLocalPosition = (Vector3)stream.ReceiveNext();
             networkPosition = (Vector3)stream.ReceiveNext();
