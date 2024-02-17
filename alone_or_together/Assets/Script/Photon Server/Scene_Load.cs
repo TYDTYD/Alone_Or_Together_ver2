@@ -93,7 +93,7 @@ public class Scene_Load : MonoBehaviourPunCallbacks
             VivoxManager.Instance.Login(VivoxManager.Instance.GetInstanceID().ToString());
             Debug.Log(VivoxManager.Instance.GetInstanceID().ToString());
             PhotonNetwork.LocalPlayer.NickName = Nickname.text;
-            //SceneManager.LoadScene("Game_Lobby");
+            SceneManager.LoadScene("Start_Scene");
         }
         else if (pass)
             warning.text = "Nickname must be at least one characters";
