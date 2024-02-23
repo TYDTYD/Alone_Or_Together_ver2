@@ -15,13 +15,23 @@ public class EasyTrigger : MonoBehaviourPunCallbacks
     [SerializeField] GameObject HardTrigger;
     [SerializeField] GameObject F;
 
+    IEnumerator Open(GameObject block)
+    {
+        while (block.transform.position.y < 30)
+        {
+            block.transform.position += Vector3.up * 0.01f;
+            yield return null;
+        }
+        yield break;
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                EasyWall.SetActive(false);
+                StartCoroutine(Open(EasyWall));
                 HardTrigger.SetActive(false);
             }
         }

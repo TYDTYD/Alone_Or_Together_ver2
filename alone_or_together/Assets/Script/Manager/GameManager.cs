@@ -166,6 +166,7 @@ public class GameManager : Singleton<GameManager>
         PlayerPrefs.GetFloat("TutorialClear", 0);
         PlayerPrefs.SetFloat("Stage1Clear", 0);
         PlayerPrefs.SetFloat("Stage2Clear", 0);
+        PlayerPrefs.SetFloat("StartClear", 0);
 
         ShaderChange = true;
 

@@ -126,6 +126,9 @@ public class UIManager : MonoBehaviourPunCallbacks
 
     public void LeaveRoom()
     {
+        VivoxManager.Instance.LeaveChannel();
+        if (VivoxManager.Instance.vivox.channelId != null)
+            VivoxManager.Instance.vivox.loginSession.DeleteChannelSession(VivoxManager.Instance.vivox.channelId);
         PhotonNetwork.LeaveRoom();
     }
 

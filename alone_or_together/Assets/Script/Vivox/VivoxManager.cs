@@ -116,6 +116,13 @@ public class VivoxManager : Singleton<VivoxManager>
         
     }
 
+    public void LeaveChannel()
+    {
+        UserCallbacks(false, vivox.channelSession);
+        ChannelCallbacks(false, vivox.channelSession);
+        vivox.channelSession.Disconnect();
+    }
+
     public void ChannelCallbacks(bool bind,IChannelSession session)
     {
         if (bind)

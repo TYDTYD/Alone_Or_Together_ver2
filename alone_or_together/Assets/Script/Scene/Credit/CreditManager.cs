@@ -52,6 +52,10 @@ public class CreditManager : MonoBehaviourPunCallbacks
     public void Load()
     {
         PhotonNetwork.Disconnect();
+        VivoxManager.Instance.LeaveChannel();
+        if (VivoxManager.Instance.vivox.channelId != null)
+            VivoxManager.Instance.vivox.loginSession.DeleteChannelSession(VivoxManager.Instance.vivox.channelId);
+        VivoxManager.Instance.vivox.client.Uninitialize();      
         SceneManager.LoadScene("Game_Start");
     }
 
