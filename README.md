@@ -67,23 +67,6 @@ public class Position_Switch : MonoBehaviourPunCallbacks
   <code>
 public class Waiting_Room : MonoBehaviourPunCallbacks
 {   
-    public void Awake()
-    {
-        PhotonNetwork.AutomaticallySyncScene = true;
-    }
-
-    public override void OnEnable()
-    {
-        base.OnEnable();
-        UpdateManager.SubscribeToUpdate(UpdateWork);
-    }
-    
-    public override void OnDisable()
-    {
-        base.OnDisable();
-        UpdateManager.UnsubscribeFromUpdate(UpdateWork);
-    }
-
     void Start()
     {
         Hashtable props = new Hashtable
@@ -103,17 +86,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         if (CheckPlayersReady())
         {
             Information.text = "All players are ready.\nYou can start the game.";
-            for (int i = 0; i < Stages.Length; i++)
-            {
-                if (i == 0 && PlayerPrefs.GetFloat("Tutorial") == 0)
-                {
-                    //Stages[i].interactable = false;
-                }
-                else if (PlayerPrefs.GetFloat("Stage" + i + "Clear") == 0)
-                {
-                    //Stages[i].interactable = false;
-                }
-            }
         }
         else if(PhotonNetwork.IsMasterClient)
         {
@@ -202,13 +174,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         }
 
         return false;
-    }
-
-    [PunRPC]
-    private void SyncStage(int i, string str)
-    {
-        StageButton.GetComponent<Image>().sprite = StagePic[i];
-        StageText.text = str;
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
