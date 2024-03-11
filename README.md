@@ -19,6 +19,7 @@
 ### 기술 설명서
 - GitHub 및 Github desktop을 통한 협업 개발
 - GitHub project를 통한 일정 관리
+- Photon Pun2를 사용한 멀티 게임 제작
 - 멀티 환경에서의 사용자 상호작용 아이템 제작
 <pre>
   <code>
