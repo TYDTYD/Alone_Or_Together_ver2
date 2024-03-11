@@ -23,15 +23,6 @@
   <code>
 public class Position_Switch : MonoBehaviourPunCallbacks
 {
-    GameObject[] index;
-    GameObject player1;
-    GameObject player2;
-    
-    private void Start()
-    {
-        Invoke("playerFind", 2f);
-    }
-
     void playerFind()
     {
         index = GameObject.FindGameObjectsWithTag("Player");
