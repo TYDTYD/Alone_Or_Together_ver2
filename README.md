@@ -152,7 +152,29 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
             }
         }
     }
-                  
+
+    private bool CheckPlayersReady()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return false;
+        }
+
+        for(int i=1; i<=PhotonNetwork.PlayerList.Length-1; i++)
+        {
+            object isPlayerReady;
+            
+            if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue("IsPlayerReady", out isPlayerReady))
+            {
+                if ((bool)isPlayerReady)
+                    return true;
+            }
+            else
+                return false;
+        }
+
+        return false;
+    }
 
   </code>
 </pre>
