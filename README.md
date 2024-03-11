@@ -1,7 +1,5 @@
 #### Alone Or Together
 ![main capsule](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/011e6aa9-5e00-4a85-8a09-e9592388c956)
-## 플레이 영상
-
 ### 프로젝트 소개
 - 게임 장르 : 2인 멀티 협동 플랫포머
 - 제작 기간 : 2022.09 ~ 2022.05
