@@ -23,7 +23,7 @@
 - 멀티 환경에서의 사용자 상호작용 아이템 제작
 <pre>
   <code>
-    public class Position_Switch : MonoBehaviourPunCallbacks
+public class Position_Switch : MonoBehaviourPunCallbacks
 {
     GameObject[] index;
     GameObject player1;
@@ -69,7 +69,6 @@
         if(PhotonNetwork.IsMasterClient)
             PhotonNetwork.Destroy(gameObject);
     }
-
 }
   </code>
 </pre>
