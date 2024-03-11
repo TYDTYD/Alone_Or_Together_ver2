@@ -153,30 +153,7 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         }
     }
                   
-    // 방장이 모든 플레이어가 레디했는지 확인하는 함수
-    private bool CheckPlayersReady()
-    {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            return false;
-        }
 
-        for(int i=1; i<PhotonNetwork.PlayerList.Length; i++)
-        {
-            object isPlayerReady;
-            
-            if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue("IsPlayerReady", out isPlayerReady))
-            {
-                if ((bool)isPlayerReady)
-                    return true;
-            }
-            else
-                return false;
-        }
-
-        return false;
-    }
-}
   </code>
 </pre>
 - 사용자 간의 움직임 동기화 지연 최소화
