@@ -1,5 +1,7 @@
+#### Alone Or Together
 ![main capsule](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/011e6aa9-5e00-4a85-8a09-e9592388c956)
-- 플레이 영상 넣기
+## 플레이 영상
+
 ### 프로젝트 소개
 - 게임 장르 : 2인 멀티 협동 플랫포머
 - 제작 기간 : 2022.09 ~ 2022.05
@@ -21,7 +23,54 @@
 - 멀티 환경에서의 사용자 상호작용 아이템 제작
 <pre>
   <code>
+    public class Position_Switch : MonoBehaviourPunCallbacks
+{
+    GameObject[] index;
+    GameObject player1;
+    GameObject player2;
     
+    private void Start()
+    {
+        Invoke("playerFind", 2f);
+    }
+
+    void playerFind()
+    {
+        index = GameObject.FindGameObjectsWithTag("Player");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("playerIndex", RpcTarget.All, index[0].GetPhotonView().ViewID, index[1].GetPhotonView().ViewID);
+        }
+    }
+    [PunRPC]
+    void playerIndex(int view1, int view2)
+    {
+        player1 = PhotonView.Find(view1).gameObject;
+        player2 = PhotonView.Find(view2).gameObject;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && other.gameObject.GetPhotonView().IsMine)
+        {
+            AudioManager.Instance.AddSfxSoundData(SFXClip.PosChangeItem, false, transform.position);
+            Vector3 pos1 = player1.transform.position;
+            Vector3 pos2 = player2.transform.position;
+            photonView.RPC("SwitchPlayerPositions", RpcTarget.AllViaServer, pos1, pos2);
+        }
+    }
+
+    [PunRPC]
+    void SwitchPlayerPositions(Vector3 pos1, Vector3 pos2)
+    {
+        player1.transform.position = pos2;
+        player2.transform.position = pos1;
+
+        if(PhotonNetwork.IsMasterClient)
+            PhotonNetwork.Destroy(gameObject);
+    }
+
+}
   </code>
 </pre>
 - 멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
