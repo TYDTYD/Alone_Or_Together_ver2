@@ -22,8 +22,6 @@
 - 멀티 환경에서의 사용자 상호작용 아이템 제작
 <pre>
   <code>
-public class Position_Switch : MonoBehaviourPunCallbacks
-{
     void playerFind()
     {
         index = GameObject.FindGameObjectsWithTag("Player");
@@ -38,7 +36,6 @@ public class Position_Switch : MonoBehaviourPunCallbacks
         player1 = PhotonView.Find(view1).gameObject;
         player2 = PhotonView.Find(view2).gameObject;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && other.gameObject.GetPhotonView().IsMine)
@@ -49,7 +46,6 @@ public class Position_Switch : MonoBehaviourPunCallbacks
             photonView.RPC("SwitchPlayerPositions", RpcTarget.AllViaServer, pos1, pos2);
         }
     }
-
     [PunRPC]
     void SwitchPlayerPositions(Vector3 pos1, Vector3 pos2)
     {
@@ -59,15 +55,12 @@ public class Position_Switch : MonoBehaviourPunCallbacks
         if(PhotonNetwork.IsMasterClient)
             PhotonNetwork.Destroy(gameObject);
     }
-}
   </code>
 </pre>
 - 멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
 - 이미지 넣기
 <pre>
   <code>
-public class Waiting_Room : MonoBehaviourPunCallbacks
-{   
     void Start()
     {
         Hashtable props = new Hashtable
@@ -77,7 +70,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         ReadyGameButton.SetActive(!PhotonNetwork.IsMasterClient);
     }
-          
     // 방을 떠나는 함수
     public void OnLeaveGameButtonClicked()
     {
@@ -90,7 +82,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         if(VivoxManager.Instance.vivox.channelId != null)
             VivoxManager.Instance.vivox.loginSession.DeleteChannelSession(VivoxManager.Instance.vivox.channelId);
     }
-
     public void OnReadyGameButtonClicked()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -120,7 +111,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         {
             return false;
         }
-
         for(int i=1; i<=PhotonNetwork.PlayerList.Length-1; i++)
         {
             object isPlayerReady;
@@ -133,16 +123,50 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
             else
                 return false;
         }
-
         return false;
     }
-
   </code>
 </pre>
 - 사용자 간의 움직임 동기화 지연 최소화
 <pre>
   <code>
-    
+    private void WalkAndSprint(P_Input input, bool TPV = true)
+    {
+        float lastFrameSec = Time.deltaTime;
+
+        currentSpeed = new Vector3(rigid.velocity.x, 0, rigid.velocity.z).magnitude;
+        inputMagnitude = input.Move.magnitude;
+
+        maxSpeed = input.Sprint ? sprintSpeed : walkSpeed;
+        maxSpeed = input.Move == Vector2.zero ? 0 : maxSpeed;
+
+        _animationBlend = Mathf.Lerp(_animationBlend, maxSpeed, lastFrameSec * speedChangeRate);
+        _animationBlend = _animationBlend < 0.01f ? 0 : _animationBlend;
+
+        // 이동 속도 설정
+        if (currentSpeed < maxSpeed - 0.1f || currentSpeed > maxSpeed + 0.1f)
+        {
+            // creates curved result rather than a linear one giving a more organic speed change
+            // note T in Lerp is clamped, so we don't need to clamp our speed
+            moveSpeed = Mathf.Lerp(currentSpeed, maxSpeed * inputMagnitude,
+                lastFrameSec*speedChangeRate);
+
+            // round speed to 3 decimal places
+            moveSpeed = Mathf.Round(moveSpeed * 1000f) / 1000f;
+        }
+        else
+            moveSpeed = maxSpeed;
+
+        // 회전 설정
+        rotation = Mathf.Atan2(input.Move.x, input.Move.y) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
+        if(TPV && input.Move != Vector2.zero)
+            rigid.rotation = Quaternion.Euler(0.0f,Mathf.SmoothDampAngle(transform.eulerAngles.y, rotation, ref _rotationVelocity, RotationSmoothTime), 0.0f);
+
+        rigid.MovePosition(transform.position + (Quaternion.Euler(0.0f, rotation, 0.0f) * Vector3.forward).normalized * (moveSpeed * lastFrameSec));
+
+        animator.SetFloat(GameManager.animIDSpeed, _animationBlend);
+        animator.SetFloat(GameManager.animIDMotionSpeed, inputMagnitude);
+    }
   </code>
 </pre>
 - 멀티 환경에서의 사용자 컨텐츠 제작 (2인 협동 자동차)
