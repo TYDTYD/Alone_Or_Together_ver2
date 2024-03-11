@@ -76,31 +76,8 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         ReadyGameButton.SetActive(!PhotonNetwork.IsMasterClient);
-        currentStage = StageButton.GetComponent<Image>().sprite;
-        StageText.text = "Tutorial";
     }
-
-    // Update is called once per frame
-    void UpdateWork()
-    {
-        StartGameButton.interactable = CheckPlayersReady();
-        if (CheckPlayersReady())
-        {
-            Information.text = "All players are ready.\nYou can start the game.";
-        }
-        else if(PhotonNetwork.IsMasterClient)
-        {
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
-                Information.text = "All players are not ready yet.\nUnable to start the game.";
-            else
-                Information.text = "You need 1 more player to start the game.";
-        }
-        else
-        {
-            Information.text = "";
-        }
-    }
-
+          
     // 방을 떠나는 함수
     public void OnLeaveGameButtonClicked()
     {
@@ -112,22 +89,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         VivoxManager.Instance.vivox.channelSession.Disconnect();
         if(VivoxManager.Instance.vivox.channelId != null)
             VivoxManager.Instance.vivox.loginSession.DeleteChannelSession(VivoxManager.Instance.vivox.channelId);
-    }
-
-    // 튜토리얼 씬으로 옮겨주고 이 방에 다른 플레이어가 들어오지 못하도록 하는 함수
-    public void OnStartGameButtonClicked()
-    {
-        PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.LoadLevel(currentStage.name);
-    }
-
-    // 방을 떠났을 때 씬을 옮기고 방장을 인계하는 작업을 해주는 함수
-    public override void OnLeftRoom()
-    {
-        base.OnLeftRoom();
-        OnJoinedLobby();
-        SceneManager.LoadScene("Game_Lobby"); 
     }
 
     public void OnReadyGameButtonClicked()
