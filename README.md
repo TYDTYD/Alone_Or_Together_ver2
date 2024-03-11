@@ -152,7 +152,7 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
             }
         }
     }
-
+                  
     // 방장이 모든 플레이어가 레디했는지 확인하는 함수
     private bool CheckPlayersReady()
     {
@@ -175,17 +175,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         }
 
         return false;
-    }
-
-    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
-    {
-        base.OnPlayerEnteredRoom(newPlayer);
-    }
-
-    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
-    {
-        base.OnMasterClientSwitched(newMasterClient);
-        ReadyGameButton.gameObject.SetActive(!PhotonNetwork.IsMasterClient);
     }
 }
   </code>
