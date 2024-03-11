@@ -1,4 +1,4 @@
-### Alone Or Together
+## Alone Or Together
 ![main capsule](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/011e6aa9-5e00-4a85-8a09-e9592388c956)
 [플레이 영상](https://youtu.be/Okd6aUe-2yk)
 ### 프로젝트 소개
