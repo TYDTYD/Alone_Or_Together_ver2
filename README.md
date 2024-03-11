@@ -70,6 +70,11 @@
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         ReadyGameButton.SetActive(!PhotonNetwork.IsMasterClient);
     }
+    void UpdateWork()
+    {
+        // 레디 체크 함수를 통한 스타트 버튼 활성화/비활성화
+        StartGameButton.interactable = CheckPlayersReady();
+    }
     // 방을 떠나는 함수
     public void OnLeaveGameButtonClicked()
     {
@@ -82,6 +87,7 @@
         if(VivoxManager.Instance.vivox.channelId != null)
             VivoxManager.Instance.vivox.loginSession.DeleteChannelSession(VivoxManager.Instance.vivox.channelId);
     }
+    // 레디 버튼 클릭 함수
     public void OnReadyGameButtonClicked()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -104,7 +110,7 @@
             }
         }
     }
-
+    // 레디 상태 체크 함수
     private bool CheckPlayersReady()
     {
         if (!PhotonNetwork.IsMasterClient)
