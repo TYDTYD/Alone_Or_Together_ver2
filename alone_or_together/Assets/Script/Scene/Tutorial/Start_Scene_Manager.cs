@@ -10,8 +10,8 @@ public class Start_Scene_Manager : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneManager.LoadScene("Game_Lobby");
             PlayerPrefs.SetFloat("StartClear", 1);
+            SceneManager.LoadScene("Game_Lobby");
         }
     }
 }

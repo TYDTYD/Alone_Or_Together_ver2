@@ -66,7 +66,6 @@ public class Scene_Load : MonoBehaviourPunCallbacks
     {
         start.SetActive(true);
         information.SetActive(false);
-        
     }
 
     
@@ -90,13 +89,22 @@ public class Scene_Load : MonoBehaviourPunCallbacks
 
         if (pass && Nickname.text != "")
         {
-            VivoxManager.Instance.Login(VivoxManager.Instance.GetInstanceID().ToString());
-            Debug.Log(VivoxManager.Instance.GetInstanceID().ToString());
+            VivoxManager.Instance.Login(VivoxManager.Instance.GetHashCode().ToString());
             PhotonNetwork.LocalPlayer.NickName = Nickname.text;
+
             if (PlayerPrefs.GetFloat("StartClear") == 0)
+            {
                 SceneManager.LoadScene("Start_Scene");
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
             else
+            {
                 SceneManager.LoadScene("Game_Lobby");
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
         }
         else if (pass)
             warning.text = "Nickname must be at least one characters";

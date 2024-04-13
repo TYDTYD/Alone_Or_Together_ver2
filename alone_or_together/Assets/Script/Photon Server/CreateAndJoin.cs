@@ -44,7 +44,6 @@ public class CreateAndJoin : MonoBehaviourPunCallbacks
         {
             room_Dict.Add(createInput.text, room_Prefab);
             VivoxManager.Instance.JoinChannel(createInput.text.GetHashCode().ToString(), ChannelType.NonPositional);
-            Debug.Log(createInput.text.GetHashCode().ToString());
             if (toggle.isOn)
                 PhotonNetwork.CreateRoom(createInput.text, new RoomOptions { MaxPlayers = 2, IsVisible = false });
             else
@@ -106,6 +105,7 @@ public class CreateAndJoin : MonoBehaviourPunCallbacks
         {
             if (room.RemovedFromList)
             {
+                
                 if (room_Dict.ContainsKey(room.Name))
                 {
                     room_Dict.TryGetValue(room.Name, out GameObject tmp);

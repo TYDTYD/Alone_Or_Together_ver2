@@ -169,9 +169,6 @@ public class GameManager : Singleton<GameManager>
         PlayerPrefs.SetFloat("StartClear", 0);
 
         ShaderChange = true;
-
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
     }
 
     private void Update()
