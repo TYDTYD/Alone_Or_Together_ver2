@@ -12,6 +12,8 @@ public class Start_Scene_Manager : MonoBehaviour
         {
             PlayerPrefs.SetFloat("StartClear", 1);
             SceneManager.LoadScene("Game_Lobby");
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

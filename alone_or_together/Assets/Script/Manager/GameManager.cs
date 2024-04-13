@@ -72,7 +72,7 @@ public class GameManager : Singleton<GameManager>
     {
         InitRespawnPoint();
 
-        if(scene.name == "Tutorial" || scene.name == "Stage_1"|| scene.name == "Stage_2" || scene.name == "Ending")
+        if(scene.name== "Start_Scene" || scene.name == "Tutorial" || scene.name == "Stage_1"|| scene.name == "Stage_2" || scene.name == "Ending")
         {
             Cursor.lockState= CursorLockMode.Locked;
             Cursor.visible = false;
