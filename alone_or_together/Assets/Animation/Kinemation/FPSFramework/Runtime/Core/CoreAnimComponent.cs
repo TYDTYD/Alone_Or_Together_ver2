@@ -350,7 +350,8 @@ namespace Kinemation.FPSFramework.Runtime.Core
             _playableGraph.Connect(controllerPlayable, 0, _layerMixerPlayable, 0);
             _layerMixerPlayable.SetInputWeight(0, 1f);
 
-            _layerMixerPlayable.SetLayerMaskFromAvatarMask(1, upperBodyMask);
+            if(upperBodyMask!=null)
+                _layerMixerPlayable.SetLayerMaskFromAvatarMask(1, upperBodyMask);
 
             _playableGraph.Play();
         }

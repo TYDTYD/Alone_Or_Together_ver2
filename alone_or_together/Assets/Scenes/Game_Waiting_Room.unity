@@ -2845,7 +2845,6 @@ MonoBehaviour:
   Stages:
   - {fileID: 1170939255}
   - {fileID: 501967642}
-  - {fileID: 0}
   StagePic:
   - {fileID: 21300000, guid: 115d532409fae3f4bb064a858e905c82, type: 3}
   - {fileID: 21300000, guid: 93c2fc2128a62d143b96358b2da5ee26, type: 3}

@@ -15,6 +15,12 @@ public class Lever : MonoBehaviourPunCallbacks
     [SerializeField] GameObject container;
     [SerializeField] GameObject entrance;
 
+
+    private void Start()
+    {
+
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -22,7 +28,7 @@ public class Lever : MonoBehaviourPunCallbacks
             photonView.RPC("AddRigidbody", RpcTarget.AllViaServer, Input.GetKey(KeyCode.F));
         }
     }
-    
+
     [PunRPC]
     void AddRigidbody(bool check)
     {
@@ -31,6 +37,11 @@ public class Lever : MonoBehaviourPunCallbacks
             container.AddComponent<Rigidbody>();
             container.GetComponent<Rigidbody>().freezeRotation = true;
             entrance.SetActive(false);
+            GameObject[] arrows = GameObject.FindGameObjectsWithTag("Arrow");
+            foreach(GameObject arrow in arrows)
+            {
+                arrow.SetActive(false);
+            }
         }
     }
 }

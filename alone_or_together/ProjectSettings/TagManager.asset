@@ -16,6 +16,7 @@ TagManager:
   - CheckPoint
   - Obstacle
   - ChatInput
+  - Arrow
   layers:
   - Default
   - TransparentFX

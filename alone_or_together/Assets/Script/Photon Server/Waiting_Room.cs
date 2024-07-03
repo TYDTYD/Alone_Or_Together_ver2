@@ -65,17 +65,6 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
         if (CheckPlayersReady())
         {
             Information.text = "All players are ready.\nYou can start the game.";
-            for (int i = 0; i < Stages.Length; i++)
-            {
-                if (i == 0 && PlayerPrefs.GetFloat("Tutorial") == 0)
-                {
-                    //Stages[i].interactable = false;
-                }
-                else if (PlayerPrefs.GetFloat("Stage" + i + "Clear") == 0)
-                {
-                    //Stages[i].interactable = false;
-                }
-            }
         }
         else if(PhotonNetwork.IsMasterClient)
         {
@@ -83,6 +72,13 @@ public class Waiting_Room : MonoBehaviourPunCallbacks
                 Information.text = "All players are not ready yet.\nUnable to start the game.";
             else
                 Information.text = "You need 1 more player to start the game.";
+            for (int i = 0; i < Stages.Length; i++)
+            {
+                if (PlayerPrefs.GetFloat("Stage" + (i+1).ToString() + "Clear") == 0)
+                {
+                    Stages[i].interactable = false;
+                }
+            }
         }
         else
         {

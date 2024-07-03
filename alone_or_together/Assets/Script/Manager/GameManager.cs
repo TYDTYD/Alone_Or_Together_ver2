@@ -164,9 +164,9 @@ public class GameManager : Singleton<GameManager>
         Screen.fullScreen = true;
 
         PlayerPrefs.GetFloat("TutorialClear", 0);
-        PlayerPrefs.SetFloat("Stage1Clear", 0);
-        PlayerPrefs.SetFloat("Stage2Clear", 0);
-        PlayerPrefs.SetFloat("StartClear", 0);
+        PlayerPrefs.GetFloat("Stage1Clear", 0);
+        PlayerPrefs.GetFloat("Stage2Clear", 0);
+        PlayerPrefs.GetFloat("StartClear", 0);
 
         ShaderChange = true;
     }
