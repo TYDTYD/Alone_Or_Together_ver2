@@ -21,6 +21,11 @@
 - GitHub project를 통한 일정 관리
 - Photon Pun2를 사용한 멀티 게임 제작
 - 멀티 환경에서의 사용자 상호작용 아이템 제작
+
+<details>
+  <summary>
+    상호작용 아이템 코드
+  </summary>
 <pre>
   <code>
     void playerFind()
@@ -57,7 +62,8 @@
             PhotonNetwork.Destroy(gameObject);
     }
   </code>
-</pre>
+</pre>  
+</details>
 - 멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
 <pre>
   <code>
