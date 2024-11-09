@@ -64,7 +64,10 @@
   </code>
 </pre>  
 </details>
-- 멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
+<details>
+  <summary>
+    멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
+  </summary>
 <pre>
   <code>
     void Start()
@@ -139,7 +142,11 @@
     }
   </code>
 </pre>
-- 사용자 간의 움직임 동기화 지연 최소화
+</details>
+<details>
+  <summary>
+    사용자 간의 움직임 동기화 지연 최소화
+  </summary>
 <pre>
   <code>
     private void WalkAndSprint(P_Input input, bool TPV = true)
@@ -181,6 +188,8 @@
     }
   </code>
 </pre>
+</details>
 - Vivox Api를 통한 멀티 채팅 시스템 구현 및 멀티 오디오 시스템 구현
+
 ![image](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/8b082265-51b0-4f2f-9dc0-7b5f4cde3cd1)
 
