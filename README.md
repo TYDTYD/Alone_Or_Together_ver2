@@ -9,7 +9,6 @@
 
 ### 개발 규모
 - 팀 인원 : 4명
-- @youwonsock @TYDTYD @ingsussi @CassisSoda
 ### Member
 <table>
     <tr height="140px">
