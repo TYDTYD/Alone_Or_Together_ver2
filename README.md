@@ -10,6 +10,30 @@
 ### 개발 규모
 - 팀 인원 : 4명
 - @youwonsock @TYDTYD @ingsussi @CassisSoda
+### Member
+<table>
+    <tr height="140px">
+        <td align="center" width="130px">
+            <a href="https://github.com/youwonsock"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/46276141?v=4"/></a>
+            <br />
+            <a href="https://github.com/youwonsock">youwonsock</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/TYDTYD"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48386074?v=4"/></a>
+            <br />
+            <a href="https://github.com/TYDTYD">TYDTYD</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/ingsussi"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/79362735?v=4"/></a>
+            <br />
+            <a href="https://github.com/ingsussi">ingsussi</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/CassisSoda"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/97022429?v=4"/></a>
+            <br />
+            <a href="https://github.com/CassisSoda">CassisSoda</a>
+        </td>
+</table>
 - 나의 역할 : 개발자 ( 포톤 api를 통한 멀티 환경 조성, 게임 컨텐츠 제작 )
 
 ### 겪었던 힘들었던 점들
