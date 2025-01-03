@@ -215,6 +215,463 @@
 </pre>
 </details>
 - Vivox Api를 통한 멀티 채팅 시스템 구현 및 멀티 오디오 시스템 구현
+<details>
+  <summary>
+    오디오 서버 시스템 구축
+  </summary>
+<pre>
+  <code>
+    public class VivoxManager : Singleton<VivoxManager>
+{
+    public class Vivox
+    {
+        public Client client;
+
+        public Uri server = new Uri("https://unity.vivox.com/appconfig/14568-vivox-97738-udash");
+        public string issuer = "14568-vivox-97738-udash";
+        public string domain = "mtu1xp.vivox.com";
+        public string tokenKey = "CImCDdxDROuGjMggtuFpGyKuwYZuOP0a";
+        public TimeSpan timeSpan = TimeSpan.FromSeconds(90);
+
+        public ILoginSession loginSession;
+        public IChannelSession channelSession;
+        public ChannelId channelId;
+    }
+    ChatManager input;
+    public Vivox vivox = new Vivox();
+    public bool isLogin = false;
+    async void Awake()
+    {
+        try
+        {
+            await UnityServices.InitializeAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        vivox.client = new Client();
+        vivox.client.Uninitialize();
+        vivox.client.Initialize();
+    }
+
+    private void OnApplicationQuit()
+    {
+        vivox.client.Uninitialize();
+    }
+
+    public void UserCallbacks(bool bind, IChannelSession session)
+    {
+        if (bind)
+        {
+            vivox.channelSession.Participants.AfterKeyAdded += AddUser;
+            vivox.channelSession.Participants.BeforeKeyRemoved += LeaveUser;
+        }
+        else
+        {
+            vivox.channelSession.Participants.AfterKeyAdded -= AddUser;
+            vivox.channelSession.Participants.BeforeKeyRemoved -= LeaveUser;
+        }
+    }
+
+    public void AddUser(object sender, KeyEventArg<string> userData)
+    {
+        var temp = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
+
+        IParticipant user = temp[userData.Key];
+    }
+
+    public void LeaveUser(object sender, KeyEventArg<string> userData)
+    {
+        var temp = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
+
+        IParticipant user = temp[userData.Key];
+    }
+
+    public void Login(string name)
+    {
+        AccountId accountId = new AccountId(vivox.issuer, name, vivox.domain);
+        vivox.loginSession = vivox.client.GetLoginSession(accountId);
+        vivox.loginSession.BeginLogin(vivox.server, vivox.loginSession.GetLoginToken(vivox.tokenKey, vivox.timeSpan),
+            callback =>
+            {
+                try
+                {
+                    vivox.loginSession.EndLogin(callback);
+                    isLogin = true;
+                    Debug.Log("로그인 완료");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Debug.Log("로그인 실패");
+                }
+            });
+    }
+
+    public void JoinChannel(string channelName, ChannelType channelType)
+    {
+        vivox.channelId = new ChannelId(vivox.issuer, channelName, vivox.domain, channelType);
+        vivox.channelSession = vivox.loginSession.GetChannelSession(vivox.channelId);
+        UserCallbacks(true, vivox.channelSession);
+        ChannelCallbacks(true, vivox.channelSession);
+        vivox.channelSession.BeginConnect(true, true, true, vivox.channelSession.GetConnectToken(vivox.tokenKey, vivox.timeSpan),
+            callback =>
+            {
+                try
+                {
+                    vivox.channelSession.EndConnect(callback);
+                    Debug.Log("채널 접속 완료");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
+        
+    }
+
+    public void LeaveChannel()
+    {
+        UserCallbacks(false, vivox.channelSession);
+        ChannelCallbacks(false, vivox.channelSession);
+        vivox.channelSession.Disconnect();
+    }
+
+    public void ChannelCallbacks(bool bind,IChannelSession session)
+    {
+        if (bind)
+        {
+            session.MessageLog.AfterItemAdded += ReceiveMessage;
+        }
+        else
+        {
+            session.MessageLog.AfterItemAdded -= ReceiveMessage;
+        }
+    }
+
+    public void SendMsg(string str)
+    {
+        vivox.channelSession.BeginSendText(str, callback =>
+        {
+             try
+             {
+                 vivox.channelSession.EndSendText(callback);
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 throw;
+
+             }
+        });
+    }
+
+    public void ReceiveMessage(object sender, QueueItemAddedEventArgs<IChannelTextMessage> queueItemAddedEventArgs){
+        var message= queueItemAddedEventArgs.Value.Message;
+        input = GameObject.FindGameObjectWithTag("ChatInput").GetComponent<ChatManager>();
+        input.InputChat(message);
+    }
+}
+  </code>
+</pre>
+</details>
+
+<details>
+  <summary>
+    오디오 대기실 시스템 관리
+  </summary>
+<pre>
+  <code>
+      public class VoiceManager : MonoBehaviourPunCallbacks
+{
+    public int index;
+    public bool isMute, OtherMute;
+    int Volume, OtherVolume;
+    [SerializeField] GameObject[] Profile = new GameObject[2];
+    [SerializeField] Button[] Profile_Btn = new Button[2];
+    [SerializeField] Image[] Profile_Img = new Image[2];
+    [SerializeField] Text[] Profile_Text = new Text[2];
+    public Sprite Other, Mine, mute, sound;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        isMute = VivoxManager.Instance.vivox.client.AudioInputDevices.Muted;
+        OtherMute = VivoxManager.Instance.vivox.client.AudioOutputDevices.Muted;
+        Volume = VivoxManager.Instance.vivox.client.AudioInputDevices.VolumeAdjustment;
+        OtherVolume = VivoxManager.Instance.vivox.client.AudioOutputDevices.VolumeAdjustment;
+
+        Mine = sound;
+        Other = sound;
+        
+        MasterCheckInit();
+    }
+
+    void MasterCheckInit()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Profile_Btn[i].onClick.RemoveAllListeners();
+                if (i < PhotonNetwork.PlayerList.Length)
+                {
+                    Profile[i].SetActive(true);
+                    Profile_Text[i].text = PhotonNetwork.PlayerList[i].NickName;
+                    if (PhotonNetwork.PlayerList[i].IsLocal)
+                    {
+                        Profile_Img[i].sprite = sound;
+                        Profile_Btn[i].onClick.AddListener(MuteClicked);
+                    }
+                    else
+                    {
+                        Profile_Img[i].sprite = sound;
+                        Profile_Btn[i].onClick.AddListener(OtherMuteClicked);
+                    }
+                }
+                else
+                    Profile[i].SetActive(false);
+            }
+        }
+    }
+
+    void MasterCheck()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Profile_Btn[i].onClick.RemoveAllListeners();
+                if (i < PhotonNetwork.PlayerList.Length)
+                {
+                    Profile[i].SetActive(true);
+                    Profile_Text[i].text = PhotonNetwork.PlayerList[i].NickName;
+                    if (PhotonNetwork.PlayerList[i].IsLocal)
+                    {
+                        Profile_Img[i].sprite = Mine;
+                        Profile_Btn[i].onClick.AddListener(MuteClicked);
+                    }
+                    else
+                    {
+                        Profile_Img[i].sprite = Other;
+                        Profile_Btn[i].onClick.AddListener(OtherMuteClicked);
+                    }
+                }
+                else
+                    Profile[i].SetActive(false);
+            }
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
+        MasterCheck();
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        MasterCheck();
+    }
+
+    void MuteClicked()
+    {
+        VivoxManager.Instance.vivox.client.AudioInputDevices.Muted = !isMute;
+        isMute = !isMute;
+        if (isMute)
+            Mine = mute;
+        else
+            Mine = sound;
+        for (int i = 0; i < 2; i++)
+        {
+            if (i < PhotonNetwork.PlayerList.Length)
+            {
+                if (PhotonNetwork.PlayerList[i].IsLocal)
+                    Profile_Img[i].sprite = Mine;
+            }
+        }
+    }
+
+    void OtherMuteClicked()
+    {
+        VivoxManager.Instance.vivox.client.AudioOutputDevices.Muted = !OtherMute;
+        OtherMute = !OtherMute;
+        if (OtherMute)
+            Other = mute;
+        else
+            Other = sound;
+        for (int i = 0; i < 2; i++)
+        {
+            if (i < PhotonNetwork.PlayerList.Length)
+            {
+                if (!PhotonNetwork.PlayerList[i].IsLocal)
+                    Profile_Img[i].sprite = Other;
+            }
+        }
+    }
+}
+  </code>
+</pre>
+</details>
+
+<details>
+  <summary>
+    오디오 서버 시스템 구축
+  </summary>
+<pre>
+  <code>
+      public class VivoxManager : Singleton<VivoxManager>
+{
+    public class Vivox
+    {
+        public Client client;
+        public TimeSpan timeSpan = TimeSpan.FromSeconds(90);
+
+        public ILoginSession loginSession;
+        public IChannelSession channelSession;
+        public ChannelId channelId;
+    }
+    ChatManager input;
+    public Vivox vivox = new Vivox();
+    public bool isLogin = false;
+    async void Awake()
+    {
+        try
+        {
+            await UnityServices.InitializeAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        vivox.client = new Client();
+        vivox.client.Uninitialize();
+        vivox.client.Initialize();
+    }
+
+    private void OnApplicationQuit()
+    {
+        vivox.client.Uninitialize();
+    }
+
+    public void UserCallbacks(bool bind, IChannelSession session)
+    {
+        if (bind)
+        {
+            vivox.channelSession.Participants.AfterKeyAdded += AddUser;
+            vivox.channelSession.Participants.BeforeKeyRemoved += LeaveUser;
+        }
+        else
+        {
+            vivox.channelSession.Participants.AfterKeyAdded -= AddUser;
+            vivox.channelSession.Participants.BeforeKeyRemoved -= LeaveUser;
+        }
+    }
+
+    public void AddUser(object sender, KeyEventArg<string> userData)
+    {
+        var temp = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
+
+        IParticipant user = temp[userData.Key];
+    }
+
+    public void LeaveUser(object sender, KeyEventArg<string> userData)
+    {
+        var temp = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
+
+        IParticipant user = temp[userData.Key];
+    }
+
+    public void Login(string name)
+    {
+        AccountId accountId = new AccountId(vivox.issuer, name, vivox.domain);
+        vivox.loginSession = vivox.client.GetLoginSession(accountId);
+        vivox.loginSession.BeginLogin(vivox.server, vivox.loginSession.GetLoginToken(vivox.tokenKey, vivox.timeSpan),
+            callback =>
+            {
+                try
+                {
+                    vivox.loginSession.EndLogin(callback);
+                    isLogin = true;
+                    Debug.Log("로그인 완료");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Debug.Log("로그인 실패");
+                }
+            });
+    }
+
+    public void JoinChannel(string channelName, ChannelType channelType)
+    {
+        vivox.channelId = new ChannelId(vivox.issuer, channelName, vivox.domain, channelType);
+        vivox.channelSession = vivox.loginSession.GetChannelSession(vivox.channelId);
+        UserCallbacks(true, vivox.channelSession);
+        ChannelCallbacks(true, vivox.channelSession);
+        vivox.channelSession.BeginConnect(true, true, true, vivox.channelSession.GetConnectToken(vivox.tokenKey, vivox.timeSpan),
+            callback =>
+            {
+                try
+                {
+                    vivox.channelSession.EndConnect(callback);
+                    Debug.Log("채널 접속 완료");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
+        
+    }
+
+    public void LeaveChannel()
+    {
+        UserCallbacks(false, vivox.channelSession);
+        ChannelCallbacks(false, vivox.channelSession);
+        vivox.channelSession.Disconnect();
+    }
+
+    public void ChannelCallbacks(bool bind,IChannelSession session)
+    {
+        if (bind)
+        {
+            session.MessageLog.AfterItemAdded += ReceiveMessage;
+        }
+        else
+        {
+            session.MessageLog.AfterItemAdded -= ReceiveMessage;
+        }
+    }
+
+    public void SendMsg(string str)
+    {
+        vivox.channelSession.BeginSendText(str, callback =>
+        {
+             try
+             {
+                 vivox.channelSession.EndSendText(callback);
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 throw;
+
+             }
+        });
+    }
+
+    public void ReceiveMessage(object sender, QueueItemAddedEventArgs<IChannelTextMessage> queueItemAddedEventArgs){
+        var message= queueItemAddedEventArgs.Value.Message;
+        input = GameObject.FindGameObjectWithTag("ChatInput").GetComponent<ChatManager>();
+        input.InputChat(message);
+    }
+}
+  </code>
+</pre>
+</details>
+
 
 ![image](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/8b082265-51b0-4f2f-9dc0-7b5f4cde3cd1)
-
