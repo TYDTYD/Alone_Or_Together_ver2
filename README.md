@@ -214,7 +214,9 @@
   </code>
 </pre>
 </details>
-- Vivox Api를 통한 멀티 채팅 시스템 구현 및 멀티 오디오 시스템 구현
+
+#### Vivox Api를 통한 멀티 채팅 시스템 구현 및 멀티 오디오 시스템 구현
+
 <details>
   <summary>
     오디오 서버 시스템 구축
