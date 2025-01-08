@@ -217,6 +217,8 @@
 
 #### Vivox Api를 통한 멀티 채팅 시스템 구현 및 멀티 오디오 시스템 구현
 
+![image](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/8b082265-51b0-4f2f-9dc0-7b5f4cde3cd1)
+
 <details>
   <summary>
     오디오 서버 시스템 구축
@@ -675,5 +677,3 @@
 </pre>
 </details>
 
-
-![image](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/8b082265-51b0-4f2f-9dc0-7b5f4cde3cd1)
