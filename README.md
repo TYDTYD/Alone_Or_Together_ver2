@@ -52,7 +52,8 @@
     상호작용 아이템 코드
   </summary>
 <pre>
-  <code>
+
+```cs
     void playerFind()
     {
         index = GameObject.FindGameObjectsWithTag("Player");
@@ -86,7 +87,7 @@
         if(PhotonNetwork.IsMasterClient)
             PhotonNetwork.Destroy(gameObject);
     }
-  </code>
+```
 </pre>  
 </details>
 <details>
@@ -94,7 +95,8 @@
     멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
   </summary>
 <pre>
-  <code>
+
+```cs
     void Start()
     {
         Hashtable props = new Hashtable
@@ -165,7 +167,7 @@
         }
         return false;
     }
-  </code>
+```
 </pre>
 </details>
 <details>
@@ -173,7 +175,8 @@
     사용자 간의 움직임 동기화 지연 최소화
   </summary>
 <pre>
-  <code>
+
+```cs
     private void WalkAndSprint(P_Input input, bool TPV = true)
     {
         float lastFrameSec = Time.deltaTime;
@@ -211,7 +214,7 @@
         animator.SetFloat(GameManager.animIDSpeed, _animationBlend);
         animator.SetFloat(GameManager.animIDMotionSpeed, inputMagnitude);
     }
-  </code>
+```
 </pre>
 </details>
 
@@ -224,8 +227,9 @@
     오디오 서버 시스템 구축
   </summary>
 <pre>
-  <code>
-    public class VivoxManager : Singleton<VivoxManager>
+
+```cs
+public class VivoxManager : Singleton<VivoxManager>
 {
     public class Vivox
     {
@@ -377,7 +381,7 @@
         input.InputChat(message);
     }
 }
-  </code>
+```
 </pre>
 </details>
 
@@ -386,8 +390,9 @@
     오디오 대기실 시스템 관리
   </summary>
 <pre>
-  <code>
-      public class VoiceManager : MonoBehaviourPunCallbacks
+    
+```cs
+public class VoiceManager : MonoBehaviourPunCallbacks
 {
     public int index;
     public bool isMute, OtherMute;
@@ -516,7 +521,7 @@
         }
     }
 }
-  </code>
+```
 </pre>
 </details>
 
@@ -525,8 +530,9 @@
     오디오 서버 시스템 구축
   </summary>
 <pre>
-  <code>
-      public class VivoxManager : Singleton<VivoxManager>
+    
+```cs
+public class VivoxManager : Singleton<VivoxManager>
 {
     public class Vivox
     {
@@ -673,7 +679,7 @@
         input.InputChat(message);
     }
 }
-  </code>
+```
 </pre>
 </details>
 
