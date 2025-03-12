@@ -853,3 +853,297 @@ public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
 ```
  </pre>
 </details>
+
+### Audio Manager를 통한 사운드 관리
+<details>
+  <summary>
+    AudioManager
+  </summary>
+ <pre>
+   
+```cs
+public class AudioManager : Singleton<AudioManager>
+{
+    private class AudioData
+    {
+        AudioClip audioClip;
+        bool loop;
+        Vector3 pos;
+        Transform parent;
+
+        public AudioClip AudioClip { get { return audioClip; } }
+        public bool Loop { get { return loop; } }
+        public Vector3 Position { get { return pos; } }
+        public Transform Parent { get { return parent; } }
+
+        public AudioData(AudioClip clip, Vector3 pos, bool loop = false)
+        {
+            audioClip = clip;
+            this.pos = pos;
+            this.loop = loop;
+            this.parent = null;
+        }
+        public AudioData(AudioClip clip, Transform parent, bool loop = false)
+        {
+            audioClip = clip;
+            this.parent = parent;
+            this.loop = loop;
+            this.pos = Vector3.zero;
+        }
+    }
+
+    protected AudioManager() { }
+
+    #region Fields
+
+    //- Private -
+    private CancellationTokenSource _source;
+
+    [SerializeField] [Range(0, 1)] private float master = 1;
+    [SerializeField] [Range(0, 1)] private float sfx = 1;
+    [SerializeField] [Range(0, 1)] private float bgm = 1;
+
+    [SerializeField] private AudioClip[] sfxClips = new AudioClip[Enum.GetValues(typeof(SFXClip)).Length];
+    [SerializeField] private AudioClip[] bgmClips = new AudioClip[Enum.GetValues(typeof(BGMClip)).Length];
+
+    private Queue<AudioData> dateQueue = new Queue<AudioData>();
+
+    private Queue<AudioSource> sfxQueue = new Queue<AudioSource>();
+
+    private AudioSource bgmSource;
+
+    //- Public -
+
+    #endregion
+
+
+
+    #region Property
+
+    //- Public -
+    public float Master
+    {
+        get { return master; }
+        set
+        {
+            master = value;
+            bgmSource.volume = master * bgm;
+        }
+    }
+    public float Sfx { get { return sfx; } set { sfx = value; } }
+    public float Bgm
+    {
+        get { return bgm; }
+        set
+        {
+            bgm = value;
+            bgmSource.volume = master * bgm;
+        }
+    }
+
+    #endregion
+
+
+
+    #region Methods
+    //- Private -
+    private void UpdateWork()
+    {
+        if (dateQueue.Count > 0)
+            PlaySfxSound(dateQueue.Dequeue()).Forget();
+    }
+
+    /// <summary>
+    /// AudioData를 받아 재생해주는 메서드
+    /// </summary>
+    /// <param name="data">재생할 오디오 데이터</param>
+    /// <returns></returns>
+    private async UniTaskVoid PlaySfxSound(AudioData data)
+    {
+        AudioSource audio = sfxQueue.Count > 0 ? sfxQueue.Dequeue() : CreateAudioSource();
+
+        audio.transform.position = data.Position;
+        audio.clip = data.AudioClip;
+        audio.loop = data.Loop;
+        audio.volume = master * sfx;
+        audio.transform.parent = data.Parent;
+
+        audio.Play();
+
+        await UniTask.Delay(TimeSpan.FromSeconds(audio.clip.length), ignoreTimeScale: false);
+
+        if(!data.Loop)
+            audio.transform.parent = this.transform;
+
+        sfxQueue.Enqueue(audio);
+    }
+
+    /// <summary>
+    /// 초기화 메서드
+    /// </summary>
+    private void Init()
+    {
+        bgmSource = CreateAudioSource();
+
+        for (int i = 0; i < 10; i++)
+            sfxQueue.Enqueue(CreateAudioSource());
+    }
+
+    /// <summary>
+    /// 새로운 AudioSource 생성 메서드
+    /// </summary>
+    /// <returns></returns>
+    private AudioSource CreateAudioSource()
+    {
+        var obj = new GameObject();
+        obj.transform.parent = this.transform;
+        var audio = obj.AddComponent<AudioSource>();
+        audio.loop = false;
+
+        return audio;
+    }
+
+    /// <summary>
+    /// 씬 전환시 실행되는 메서드
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="mode"></param>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        switch(scene.name)
+        {
+            case "Game_Start":
+            case "Game_Lobby":
+            case "Game_Waiting_Room":
+            case "Ending":
+                SetBGM(BGMClip.Menu);
+                break;
+            case "Tutorial":
+                SetBGM(BGMClip.Tutorial);
+                break;
+            case "Stage_1":
+                SetBGM(BGMClip.Stage1_1);
+                break;
+            case "Stage_2":
+                SetBGM(BGMClip.Stage2_1);
+                break;
+            case "Credit":
+                SetBGM(BGMClip.Credit);
+                break;
+        }    
+    }
+
+    //- Public -
+
+    /// <summary>
+    /// BGM 설정 메서드
+    /// </summary>
+    /// <param name="data"></param>
+    public void SetBGM(BGMClip clip, bool loop = true)
+    {
+        bgmSource.loop = loop;
+        bgmSource.clip = bgmClips[(int)clip];
+
+        bgmSource.Play();
+    }
+
+    /// <summary>
+    /// SFX Sound 재생 메서드
+    /// </summary>
+    /// <param name="data"></param>
+    public void AddSfxSoundData(SFXClip clip, bool loop, Vector3 pos)
+    {
+        if (sfxClips[(int)clip] != null)
+            dateQueue.Enqueue(new AudioData(sfxClips[(int)clip], pos, loop));
+        else
+            Debug.Log("Audio Clip is Null");
+    }
+
+    /// <summary>
+    /// 음원을 따라가는 SFX Sound 재생 메서드
+    /// </summary>
+    /// <param name="data"></param>
+    public void AddSfxSoundData(SFXClip clip, bool loop, Transform transform)
+    {
+        if (sfxClips[(int)clip] != null)
+            dateQueue.Enqueue(new AudioData(sfxClips[(int)clip], transform, loop));
+        else
+            Debug.Log("Audio Clip is Null");
+    }
+
+    /// <summary>
+    /// 음소거
+    /// </summary>
+    public void MuteAll()
+    {
+        Master = 0;
+        Bgm = 0;
+        Sfx = 0;
+    }
+
+    public void MuteBgm()
+    {
+        Bgm = 0;
+    }
+
+    public void MuteSfx()
+    {
+        Sfx = 0;
+    }
+
+    #endregion
+
+
+
+    #region UnityEvent
+
+    private void OnEnable()
+    {
+        if (_source != null)
+            _source.Dispose();
+
+        _source = new CancellationTokenSource();
+
+        UpdateManager.SubscribeToUpdate(UpdateWork);
+
+        GameManager.Instance.AddOnSceneLoaded(OnSceneLoaded);
+    }
+
+    private void OnDisable()
+    {
+        if (_source != null)
+            _source.Cancel();
+
+        UpdateManager.UnsubscribeFromUpdate(UpdateWork);
+
+        if(GameManager.Instance != null)
+            GameManager.Instance.RemoveOnSceneLoaded(OnSceneLoaded);
+    }
+
+    /// <summary>
+    /// Awake에서 실행할 작업을 구현하는 메서드
+    /// </summary>
+    protected override void OnAwakeWork()
+    {
+        Init();
+    }
+
+    /// <summary>
+    /// OnDestroyed에서 실행할 작업을 구현하는 메서드
+    /// </summary>
+    protected override void OnDestroyedWork()
+    {
+        base.OnDestroyedWork();
+
+        if (_source != null)
+        {
+            _source.Cancel();
+            _source.Dispose();
+        }
+    }
+
+    #endregion
+}
+```
+ </pre>
+</details>
