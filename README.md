@@ -598,133 +598,6 @@ public class Position_Switch : MonoBehaviourPunCallbacks
 ```cs
 public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
 {
-    [Space(20)]
-    //[Header("CAR SETUP")]
-    [Space(10)]
-    [Range(20, 300)]
-    public int maxSpeed = 90; //The maximum speed that the car can reach in km/h.
-    [Range(10, 120)]
-    public int maxReverseSpeed = 45; //The maximum speed that the car can reach while going on reverse in km/h.
-    [Range(1, 20)]
-    public int accelerationMultiplier = 2; // How fast the car can accelerate. 1 is a slow acceleration and 10 is the fastest.
-    [Space(10)]
-    [Range(10, 45)]
-    public int maxSteeringAngle = 27; // The maximum angle that the tires can reach while rotating the steering wheel.
-    [Range(0.1f, 1f)]
-    public float steeringSpeed = 0.5f; // How fast the steering wheel turns.
-    [Space(10)]
-    [Range(100, 600)]
-    public int brakeForce = 350; // The strength of the wheel brakes.
-    [Range(0, 10)]
-    public float decelerationMultiplier = 2; // How fast the car decelerates when the user is not using the throttle.
-    [Space(10)]
-    public Vector3 bodyMassCenter; // This is a vector that contains the center of mass of the car. I recommend to set this value
-                                   // in the points x = 0 and z = 0 of your car. You can select the value that you want in the y axis,
-                                   // however, you must notice that the higher this value is, the more unstable the car becomes.
-                                   // Usually the y value goes from 0 to 1.5.
-
-    //WHEELS
-
-    //[Header("WHEELS")]
-
-    /*
-    The following variables are used to store the wheels' data of the car. We need both the mesh-only game objects and wheel
-    collider components of the wheels. The wheel collider components and 3D meshes of the wheels cannot come from the same
-    game object; they must be separate game objects.
-    */
-    public GameObject frontLeftMesh;
-    public WheelCollider frontLeftCollider;
-    [Space(10)]
-    public GameObject frontRightMesh;
-    public WheelCollider frontRightCollider;
-    [Space(10)]
-    public GameObject rearLeftMesh;
-    public WheelCollider rearLeftCollider;
-    [Space(10)]
-    public GameObject rearRightMesh;
-    public WheelCollider rearRightCollider;
-
-    //SOUNDS
-
-    private float carSpeed; // Used to store the speed of the car.
-    [HideInInspector]
-    public bool isDrifting; // Used to know whether the car is drifting or not.
-    [HideInInspector]
-    public bool isTractionLocked; // Used to know whether the traction of the car is locked or not.
-
-    //PRIVATE VARIABLES
-
-    /*
-    IMPORTANT: The following variables should not be modified manually since their values are automatically given via script.
-    */
-    Rigidbody carRigidbody; // Stores the car's rigidbody.
-    float steeringAxis; // Used to know whether the steering wheel has reached the maximum value. It goes from -1 to 1.
-    float throttleAxis; // Used to know whether the throttle has reached the maximum value. It goes from -1 to 1.
-    float driftingAxis;
-    float localVelocityZ;
-    float localVelocityX;
-    /*
-    The following variables are used to store information about sideways friction of the wheels (such as
-    extremumSlip,extremumValue, asymptoteSlip, asymptoteValue and stiffness). We change this values to
-    make the car to start drifting.
-    */
-    WheelFrictionCurve FLwheelFriction;
-    float FLWextremumSlip;
-    WheelFrictionCurve FRwheelFriction;
-    float FRWextremumSlip;
-    WheelFrictionCurve RLwheelFriction;
-    float RLWextremumSlip;
-    WheelFrictionCurve RRwheelFriction;
-    float RRWextremumSlip;
-
-    private Car_Together together;    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
-        //gameObject. Also, we define the center of mass of the car with the Vector3 given
-        //in the inspector.
-        carRigidbody = gameObject.GetComponent<Rigidbody>();
-        TryGetComponent<Car_Together>(out together);
-        carRigidbody.centerOfMass = bodyMassCenter;
-
-        //Initial setup to calculate the drift value of the car. This part could look a bit
-        //complicated, but do not be afraid, the only thing we're doing here is to save the default
-        //friction values of the car wheels so we can set an appropiate drifting value later.
-        FLwheelFriction = new WheelFrictionCurve();
-        FLwheelFriction.extremumSlip = frontLeftCollider.sidewaysFriction.extremumSlip;
-        FLWextremumSlip = frontLeftCollider.sidewaysFriction.extremumSlip;
-        FLwheelFriction.extremumValue = frontLeftCollider.sidewaysFriction.extremumValue;
-        FLwheelFriction.asymptoteSlip = frontLeftCollider.sidewaysFriction.asymptoteSlip;
-        FLwheelFriction.asymptoteValue = frontLeftCollider.sidewaysFriction.asymptoteValue;
-        FLwheelFriction.stiffness = frontLeftCollider.sidewaysFriction.stiffness;
-        FRwheelFriction = new WheelFrictionCurve();
-        FRwheelFriction.extremumSlip = frontRightCollider.sidewaysFriction.extremumSlip;
-        FRWextremumSlip = frontRightCollider.sidewaysFriction.extremumSlip;
-        FRwheelFriction.extremumValue = frontRightCollider.sidewaysFriction.extremumValue;
-        FRwheelFriction.asymptoteSlip = frontRightCollider.sidewaysFriction.asymptoteSlip;
-        FRwheelFriction.asymptoteValue = frontRightCollider.sidewaysFriction.asymptoteValue;
-        FRwheelFriction.stiffness = frontRightCollider.sidewaysFriction.stiffness;
-        RLwheelFriction = new WheelFrictionCurve();
-        RLwheelFriction.extremumSlip = rearLeftCollider.sidewaysFriction.extremumSlip;
-        RLWextremumSlip = rearLeftCollider.sidewaysFriction.extremumSlip;
-        RLwheelFriction.extremumValue = rearLeftCollider.sidewaysFriction.extremumValue;
-        RLwheelFriction.asymptoteSlip = rearLeftCollider.sidewaysFriction.asymptoteSlip;
-        RLwheelFriction.asymptoteValue = rearLeftCollider.sidewaysFriction.asymptoteValue;
-        RLwheelFriction.stiffness = rearLeftCollider.sidewaysFriction.stiffness;
-        RRwheelFriction = new WheelFrictionCurve();
-        RRwheelFriction.extremumSlip = rearRightCollider.sidewaysFriction.extremumSlip;
-        RRWextremumSlip = rearRightCollider.sidewaysFriction.extremumSlip;
-        RRwheelFriction.extremumValue = rearRightCollider.sidewaysFriction.extremumValue;
-        RRwheelFriction.asymptoteSlip = rearRightCollider.sidewaysFriction.asymptoteSlip;
-        RRwheelFriction.asymptoteValue = rearRightCollider.sidewaysFriction.asymptoteValue;
-        RRwheelFriction.stiffness = rearRightCollider.sidewaysFriction.stiffness;
-
-
-
-    }
-
     public override void OnEnable()
     {
         base.OnEnable();
@@ -755,8 +628,6 @@ public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
         localVelocityZ = transform.InverseTransformDirection(carRigidbody.velocity).z;
 
         //CAR PHYSICS
-
-
         if(together.BoardingNum == 0)
         {
             if (Input.GetKey(KeyCode.W))
@@ -874,41 +745,6 @@ public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
         var steeringAngle = steeringAxis * maxSteeringAngle;
         frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, steeringAngle, steeringSpeed);
         frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, steeringAngle, steeringSpeed);
-    }
-
-    // This method matches both the position and rotation of the WheelColliders with the WheelMeshes.
-    void AnimateWheelMeshes()
-    {
-        try
-        {
-            Quaternion FLWRotation;
-            Vector3 FLWPosition;
-            frontLeftCollider.GetWorldPose(out FLWPosition, out FLWRotation);
-            frontLeftMesh.transform.position = FLWPosition;
-            frontLeftMesh.transform.rotation = FLWRotation;
-
-            Quaternion FRWRotation;
-            Vector3 FRWPosition;
-            frontRightCollider.GetWorldPose(out FRWPosition, out FRWRotation);
-            frontRightMesh.transform.position = FRWPosition;
-            frontRightMesh.transform.rotation = FRWRotation;
-
-            Quaternion RLWRotation;
-            Vector3 RLWPosition;
-            rearLeftCollider.GetWorldPose(out RLWPosition, out RLWRotation);
-            rearLeftMesh.transform.position = RLWPosition;
-            rearLeftMesh.transform.rotation = RLWRotation;
-
-            Quaternion RRWRotation;
-            Vector3 RRWPosition;
-            rearRightCollider.GetWorldPose(out RRWPosition, out RRWRotation);
-            rearRightMesh.transform.position = RRWPosition;
-            rearRightMesh.transform.rotation = RRWRotation;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning(ex);
-        }
     }
 
     //
