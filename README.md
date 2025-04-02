@@ -824,6 +824,7 @@ public class VoiceManager : MonoBehaviourPunCallbacks
 </details>
 
 ## Audio Manager를 통한 Sound Queue 구현
+![image](https://github.com/user-attachments/assets/e49db437-b0d1-4ff7-832d-f4a7d3de1500)
 <details>
   <summary>
     AudioManager
