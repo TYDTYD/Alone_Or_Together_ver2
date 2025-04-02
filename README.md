@@ -1,18 +1,18 @@
-## Alone Or Together
+# Alone Or Together
 ![main capsule](https://github.com/TYDTYD/Alone_Or_Together_ver2/assets/48386074/011e6aa9-5e00-4a85-8a09-e9592388c956)
 
 ### [플레이 영상](https://youtu.be/Okd6aUe-2yk)
 
-### 프로젝트 소개
+## 프로젝트 소개
 - 게임 장르 : 2인 멀티 협동 플랫포머
 - 제작 기간 : 2022.09 ~ 2023.05
 - 프로젝트 목표 : 협업을 통한 경험 및 다중 사용자 게임 개발
 - 게임 소개 : 외계인에 납치당한 2명의 플레이어가 외계인의 실험 환경에서 협동을 통해 나아가는 이야기
 
-### 개발 규모
+## 개발 규모
 - 팀 인원 : 4명
 - 나의 역할 : 클라이언트, 서버 개발 ( 포톤 api를 통한 멀티 환경 조성, 게임 컨텐츠 제작 )
-### Member
+## Member
 <table>
     <tr height="140px">
         <td align="center" width="130px">
@@ -37,15 +37,7 @@
         </td>
 </table>
 
-### 겪었던 힘들었던 점들
-- 일정 관리에 대한 필요성 (일정 관리 툴이 필요하다는 것을 깨달았습니다)
-- 멀티 게임의 특성상 로컬, 리모트 간의 개념 이해 및 RPC 함수 이해에 대한 어려움
-- 좋은 설계에 대한 기준점 모호 (설계 기간이 길어졌습니다)
-### 기술 설명서
-- GitHub 및 Github desktop을 통한 협업 개발
-- GitHub project를 통한 일정 관리
-- Photon Pun2를 사용한 멀티 게임 제작
-- 멀티 환경에서의 사용자 상호작용 아이템 제작
+# 기술 경험
 
 </pre>  
 </details>
@@ -53,8 +45,7 @@
   <summary>
     멀티 환경에서의 사용자 게임 동시 접속 및 준비 시스템 제작
   </summary>
-<pre>
-
+    
 ```cs
     void Start()
     {
@@ -131,14 +122,12 @@
         return false;
     }
 ```
-</pre>
 </details>
 <details>
   <summary>
     사용자 간의 움직임 동기화 지연 최소화
   </summary>
-<pre>
-
+    
 ```cs
     private void WalkAndSprint(P_Input input, bool TPV = true)
     {
@@ -178,7 +167,6 @@
         animator.SetFloat(GameManager.animIDMotionSpeed, inputMagnitude);
     }
 ```
-</pre>
 </details>
 
 #### Vivox Api를 통한 멀티 채팅 시스템 구현 및 멀티 오디오 시스템 구현
@@ -189,7 +177,6 @@
   <summary>
     오디오 서버 시스템 구축
   </summary>
-<pre>
 
 ```cs
 public class VivoxManager : Singleton<VivoxManager>
@@ -347,14 +334,12 @@ public class VivoxManager : Singleton<VivoxManager>
     }
 }
 ```
-</pre>
 </details>
 
 <details>
   <summary>
     오디오 대기실 시스템 관리
   </summary>
-<pre>
     
 ```cs
 public class VoiceManager : MonoBehaviourPunCallbacks
@@ -487,7 +472,6 @@ public class VoiceManager : MonoBehaviourPunCallbacks
     }
 }
 ```
-</pre>
 </details>
 
 ### 상호작용 컨텐츠
@@ -495,7 +479,6 @@ public class VoiceManager : MonoBehaviourPunCallbacks
   <summary>
     미로 위치 바꾸기 오브젝트
   </summary>
- <pre>
    
 ```cs
 public class Position_Switch : MonoBehaviourPunCallbacks
@@ -546,14 +529,12 @@ public class Position_Switch : MonoBehaviourPunCallbacks
     }
 }
 ```
- </pre>
 </details>
 <details>
   <summary>
     협력 자동차
   </summary>
- <pre>
-   
+    
 ```cs
 public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
 {
@@ -851,7 +832,6 @@ public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
     }
 }
 ```
- </pre>
 </details>
 
 ### Audio Manager를 통한 사운드 관리
@@ -859,7 +839,6 @@ public class Car_Controller_Ver2 : MonoBehaviourPunCallbacks, IChangeCarSpeed
   <summary>
     AudioManager
   </summary>
- <pre>
    
 ```cs
 public class AudioManager : Singleton<AudioManager>
@@ -1145,5 +1124,4 @@ public class AudioManager : Singleton<AudioManager>
     #endregion
 }
 ```
- </pre>
 </details>
