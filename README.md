@@ -49,6 +49,27 @@
 Photon은 여러 기술 중에서 가장 자료가 많고, 대중성이 높았기 때문에 선택하게 되었습니다.
 
 ## Photon PUN을 통한 멀티 환경 조성
+
+![image](https://github.com/user-attachments/assets/6f820171-91bc-42f3-8ba0-ac3f985f2969)
+
+닉네임 입력 후 Start 버튼을 통해 서버 접속을 시도합니다.
+
+![image](https://github.com/user-attachments/assets/644d6430-f9ce-44f2-8204-49b0f210c847)
+
+서버 접속 중에는 로딩 애니메이션 문구를 재생합니다.
+
+![image](https://github.com/user-attachments/assets/5078c295-d849-49e1-a71f-28749f2ea444)
+
+서버 접속 성공 시 Photon Lobby로 입장합니다.
+방을 생성하거나 참가할 수 있으며 생성된 방 목록을 볼 수 있습니다.
+
+방을 생성할 때는 비밀번호를 설정할 수 있습니다.
+
+![image](https://github.com/user-attachments/assets/02826e37-1b43-4a3c-a45a-d0c8fded31fa)
+
+방에 들어가면 Photon Room으로 입장합니다.
+같은 Photon Room에 있는 사람들은 동일한 Vivox 서버를 공유합니다.
+
 </pre>  
 </details>
 <details>
