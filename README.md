@@ -552,43 +552,25 @@ public class VoiceManager : MonoBehaviourPunCallbacks
   </summary>
     
 ```cs
-    private void WalkAndSprint(P_Input input, bool TPV = true)
-    {
-        float lastFrameSec = Time.deltaTime;
+    if (!photonView.IsMine)
+{
+    if (transform.parent != null)
+        transform.localPosition =
+            Vector3.Lerp(
+                transform.localPosition,
+                networkLocalPosition,
+                Time.deltaTime * 10);
+    else
+        transform.position =
+            Vector3.Lerp(
+                transform.position,
+                networkPosition,
+                Time.deltaTime * 10);
 
-        currentSpeed = new Vector3(rigid.velocity.x, 0, rigid.velocity.z).magnitude;
-        inputMagnitude = input.Move.magnitude;
-
-        maxSpeed = input.Sprint ? sprintSpeed : walkSpeed;
-        maxSpeed = input.Move == Vector2.zero ? 0 : maxSpeed;
-
-        _animationBlend = Mathf.Lerp(_animationBlend, maxSpeed, lastFrameSec * speedChangeRate);
-        _animationBlend = _animationBlend < 0.01f ? 0 : _animationBlend;
-
-        // 이동 속도 설정
-        if (currentSpeed < maxSpeed - 0.1f || currentSpeed > maxSpeed + 0.1f)
-        {
-            // creates curved result rather than a linear one giving a more organic speed change
-            // note T in Lerp is clamped, so we don't need to clamp our speed
-            moveSpeed = Mathf.Lerp(currentSpeed, maxSpeed * inputMagnitude,
-                lastFrameSec*speedChangeRate);
-
-            // round speed to 3 decimal places
-            moveSpeed = Mathf.Round(moveSpeed * 1000f) / 1000f;
-        }
-        else
-            moveSpeed = maxSpeed;
-
-        // 회전 설정
-        rotation = Mathf.Atan2(input.Move.x, input.Move.y) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
-        if(TPV && input.Move != Vector2.zero)
-            rigid.rotation = Quaternion.Euler(0.0f,Mathf.SmoothDampAngle(transform.eulerAngles.y, rotation, ref _rotationVelocity, RotationSmoothTime), 0.0f);
-
-        rigid.MovePosition(transform.position + (Quaternion.Euler(0.0f, rotation, 0.0f) * Vector3.forward).normalized * (moveSpeed * lastFrameSec));
-
-        animator.SetFloat(GameManager.animIDSpeed, _animationBlend);
-        animator.SetFloat(GameManager.animIDMotionSpeed, inputMagnitude);
-    }
+    if (Vector3.Distance(
+        transform.position, networkPosition) > 10)
+        transform.position = networkPosition;
+}
 ```
 </details>
 
