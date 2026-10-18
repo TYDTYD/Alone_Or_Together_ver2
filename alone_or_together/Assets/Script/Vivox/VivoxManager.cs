@@ -13,9 +13,9 @@ public class VivoxManager : Singleton<VivoxManager>
         public Client client;
 
         public Uri server = new Uri("https://unity.vivox.com/appconfig/14568-vivox-97738-udash");
-        public string issuer = "14568-vivox-97738-udash";
-        public string domain = "mtu1xp.vivox.com";
-        public string tokenKey = "CImCDdxDROuGjMggtuFpGyKuwYZuOP0a";
+        public string issuer;
+        public string domain;
+        public string tokenKey;
         public TimeSpan timeSpan = TimeSpan.FromSeconds(90);
 
         public ILoginSession loginSession;
